@@ -22,7 +22,7 @@ def handle_event(event):
         transaction = Web3.to_json(event).strip('"')
         # use the transaction hash that we removed the '"' from to get the details of the transaction
         transaction = web3.eth.get_transaction(transaction)
-        print(feature_preparer.prepare(transaction, web3.eth.block_number))
+        feature_preparer.prepare(transaction, web3.eth.block_number)
 
     except Exception as err:
         pass
