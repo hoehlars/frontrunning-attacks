@@ -2,15 +2,17 @@ import numpy as np
 from web3 import Web3
 import asyncio
 from FeaturePreparer import FeaturePreparer
+from network import Network
+
 
 web3 = Web3(Web3.HTTPProvider("https://intensive-sly-mountain.quiknode.pro/a3f5256d7f2af6541d483cce3f1d49c94c01879e"))
-
 
 # test to see if you are connected to your node
 # this will print out True if you are successfully connected to a node
 print(web3.is_connected())
 
 feature_preparer = FeaturePreparer(web3)
+network = Network()
 
 def handle_event(event):
     # print the transaction hash
@@ -22,10 +24,15 @@ def handle_event(event):
         transaction = Web3.to_json(event).strip('"')
         # use the transaction hash that we removed the '"' from to get the details of the transaction
         transaction = web3.eth.get_transaction(transaction)
-        feature_preparer.prepare(transaction, web3.eth.block_number)
+        features = feature_preparer.prepare(transaction, web3.eth.block_number)
+        if features:
+            prediction = network.get_prediction(features)
+            if prediction:
+                print(f'Atk found! {transaction}')
 
     except Exception as err:
         pass
+
 
 async def log_loop(event_filter, poll_interval):
     while True:
@@ -44,6 +51,7 @@ def main():
                 log_loop(tx_filter, 5)))
     finally:
         loop.close()
+
 
 if __name__ == '__main__':
     main()
