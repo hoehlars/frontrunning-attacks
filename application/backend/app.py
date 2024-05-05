@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
 web3 = Web3(Web3.HTTPProvider("https://intensive-sly-mountain.quiknode.pro/a3f5256d7f2af6541d483cce3f1d49c94c01879e/"))
-print(web3.is_connected())
+print(f'Connected to web3: {web3.is_connected()}')
 insertion_atk_model = InsertionAtkModel(web3)
 insertion_atk_heuristics = InsertionAtkHeuristics()
 insertion_atk_live_dao = InsertionAtkLiveDAO()
@@ -32,7 +32,7 @@ def get_model_result(transaction_hash):
 
 @app.route('/api/transaction/getLiveTransactions', methods=['GET'])
 def get_live_transactions():
-    return jsonify({'live_transactions': insertion_atk_live_dao.get_live_transactions()})
+    return jsonify(insertion_atk_live_dao.get_live_transactions())
 
 
 app.run(port=5000)

@@ -1,18 +1,23 @@
+from datetime import datetime
+
 import numpy as np
 from web3 import Web3
 import asyncio
 from FeaturePreparer import FeaturePreparer
 from network import Network
+from LiveTransactionsDAO import LiveTransactionsDAO
+
 
 
 web3 = Web3(Web3.HTTPProvider("https://intensive-sly-mountain.quiknode.pro/a3f5256d7f2af6541d483cce3f1d49c94c01879e"))
 
 # test to see if you are connected to your node
 # this will print out True if you are successfully connected to a node
-print(web3.is_connected())
+print(f'Connected to web3: {web3.is_connected()}')
 
 feature_preparer = FeaturePreparer(web3)
 network = Network()
+live_transactions_dao = LiveTransactionsDAO(web3)
 
 def handle_event(event):
     # print the transaction hash
@@ -26,9 +31,8 @@ def handle_event(event):
         transaction = web3.eth.get_transaction(transaction)
         features = feature_preparer.prepare(transaction, web3.eth.block_number)
         if features:
-            prediction = network.get_prediction(features)
-            if prediction:
-                print(f'Atk found! {transaction}')
+            is_attack = network.get_prediction(features)
+            live_transactions_dao.insert_transaction(transaction, is_attack)
 
     except Exception as err:
         pass

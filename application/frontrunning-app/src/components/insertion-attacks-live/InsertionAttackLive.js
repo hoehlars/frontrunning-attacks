@@ -9,8 +9,7 @@ function InsertionAttackLive() {
     useEffect(() => {
         const intervalId = setInterval(async () => {
             const response = await getLiveTransactionClassificationOfInsertionAtk();
-            const result = response['live_transactions']
-            const sortedResult = result.sort((a, b) => a.index > b.index)
+            const sortedResult = response.sort((a, b) => a.time > b.time)
             setLiveTransactions(sortedResult);
         }, POLLING_INTERVAL);
 
@@ -18,31 +17,32 @@ function InsertionAttackLive() {
     }, [liveTransactions]);
 
     function createLiveTransactionsRow(liveTransaction, i) {
-        const classType = liveTransaction.type === 'Attack' ? 'table-danger' : 'table-success'
+        const classType = liveTransaction.isAttack ? 'table-danger' : 'table-success'
+        const etherscanLink = `https://etherscan.io/tx/${liveTransaction.transaction_hash}`
         return (
             <tr key={i} className={classType}>
                 <td>{liveTransaction.date}</td>
                 <td>{liveTransaction.time}</td>
-                <td>{liveTransaction.transactionHash}</td>
-                <td>{liveTransaction.gasPrice}</td>
-                <td>{liveTransaction.ethTransferred}</td>
+                <td><a href={etherscanLink} target="_blank" rel="noreferrer">{liveTransaction.transaction_hash}</a></td>
+                <td>{(Math.round(liveTransaction.gasPrice * 100) / 100).toFixed(2)}</td>
+                <td>{(Math.round(liveTransaction.ethAmount * 10000000) / 10000000).toFixed(7)}</td>
             </tr>
         );
     }
 
 
     return (
-        <Col className={["justify-content-center", styles.searchResult].join(" ")}>
+        <Col className={["justify-content-center", styles.searchResult, styles.textCenter].join(" ")}>
         {liveTransactions ? <>
             <Row><h3>Live transactions classification</h3></Row>
-            <Row className="justify-content-center"><Table className={styles.resultTable}>
+            <Row className={"justify-content-center"}><Table className={styles.resultTable}>
                 <thead className="table-dark">
                 <tr>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Transaction hash</th>
-                    <th>Gas Price</th>
-                    <th>ETH Transferred</th>
+                    <th>Gas Price [GWei]</th>
+                    <th>Transaction value [ETH]</th>
                 </tr>
                 </thead>
                 <tbody>
