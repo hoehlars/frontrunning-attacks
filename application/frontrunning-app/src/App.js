@@ -1,14 +1,25 @@
 import './App.css';
-import NavBar from "./components/NavBar/navbar";
 import InsertionAttacks from "./components/insertion-attacks/InsertionAttacks";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import QueryAndHeuristics from "./components/query-and-heuristics/QueryAndHeuristics";
+import NavBar from "./components/NavBar/navbar";
 
 function App() {
-  return (
-      <div className="App">
-          <NavBar/>
-          <InsertionAttacks/>
-      </div>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<>
+                    <NavBar/>
+                    <InsertionAttacks/>
+                </>}/>
+                <Route path="/queryAndHeuristics" element={
+                    <>
+                        <NavBar/>
+                        <QueryAndHeuristics/>
+                    </>}/>
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;

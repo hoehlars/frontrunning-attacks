@@ -21,8 +21,8 @@ class Network:
         x_tensor = torch.tensor(x)
         x_standardized = (x_tensor - self.mean) / self.std
         with torch.no_grad():
-            tensor = torch.tensor(x_standardized.clone().detach()).view(1, 7)
-            prediction = self.network(tensor.clone().detach().to(torch.float32))
+            tensor = x_standardized.clone().detach().view(1, 7)
+            prediction = self.network(tensor.clone().detach().to(torch.float32)).item()
             return prediction > 0.5
 
 

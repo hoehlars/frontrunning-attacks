@@ -1,59 +1,37 @@
 from datetime import datetime, date
 
+import pymongo
+from pymongo.mongo_client import MongoClient
+from bson.json_util import dumps
 
 class InsertionAtkLiveDAO():
     def __init__(self):
-        self.counter = 0
-        pass
+        uri = "mongodb+srv://larshoehener:4JYDS9UYJ5VOZvgR@cluster0.sd1cyte.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        client = MongoClient(uri)
+        try:
+            client.admin.command('ping')
+            print('Successfully connected to MongoDB')
+        except Exception as e:
+            print(e)
+
+        mydb = client["liveTransactionsEthDb"]
+        self.live_transactions_collection = mydb["liveTransactionsClassification"]
 
     def get_live_transactions(self):
-        self.counter += 1
-        today = date.today()
-        formatted_date = today.strftime('%d %B, %Y')
-        current_time = datetime.now().strftime('%H:%M:%S')
-        return [
-            {
-                'index': self.counter,
-                'date': str(formatted_date),
-                'time': current_time,
-                'transactionHash': 123,
-                'type': 'Attack',
-                'gasPrice': 100,
-                'ethTransferred': 10
-            },
-            {
-                'index': self.counter+1,
-                "date": str(formatted_date),
-                'time': current_time,
-                'transactionHash': 123,
-                'type': 'Normal',
-                'gasPrice': 100,
-                'ethTransferred': 10
-            }, {
-                'index': self.counter+2,
-                "date": str(formatted_date),
-                'time': current_time,
-                'transactionHash': 123,
-                'type': 'Normal',
-                'gasPrice': 100,
-                'ethTransferred': 10
-            },
-            {
-                'index': self.counter+3,
-                "date": str(formatted_date),
-                'time': current_time,
-                'transactionHash': 123,
-                'type': 'Normal',
-                'gasPrice': 100,
-                'ethTransferred': 10
-            },
-            {
-                'index': self.counter+4,
-                "date": str(formatted_date),
-                'time': current_time,
-                'transactionHash': 123,
-                'type': 'Normal',
-                'gasPrice': 100,
-                'ethTransferred': 10
+        latest_ten_record = self.live_transactions_collection.find().sort('_id', pymongo.DESCENDING).limit(10)
+
+        live_transactions = []
+        for record in latest_ten_record:
+            date = record['time'].strftime("%d.%m.%Y")
+            time = record['time'].strftime("%H:%M:%S")
+            transaction = {
+                'time': time,
+                'date': date,
+                'gasPrice': record['gasPrice'],
+                'isAttack': record['is_attack'],
+                'transaction_hash': str(record['transactionHash']),
+                'ethAmount': record['ethAmount']
             }
-        ]
+
+            live_transactions.append(transaction)
+        return live_transactions

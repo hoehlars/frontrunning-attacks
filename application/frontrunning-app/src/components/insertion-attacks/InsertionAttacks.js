@@ -10,13 +10,14 @@ function InsertionAttacks() {
     return (
         <Container fluid lg={2} className="m-0">
             <Row className={styles.minHeight}>
-                <Col className={[styles.topPaneLeftBorder].join(" ")}><InsertionAttackModel /></Col>
-                <Col><InsertionAttackHeuristics /></Col>
+                <Col className={[styles.topPaneLeftBorder].join(" ")}><InsertionAttackModel/></Col>
+                <Col><InsertionAttackHeuristics/></Col>
             </Row>
             <Row className={[styles.bottomPaneBorder].join(" ")}>
-                <InsertionAttackLive />
+                <InsertionAttackLive/>
             </Row>
         </Container>
     );
 }
+
 export default InsertionAttacks;
