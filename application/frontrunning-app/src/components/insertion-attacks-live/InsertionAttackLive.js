@@ -13,7 +13,7 @@ function InsertionAttackLive() {
             setLiveTransactions(sortedResult);
         }, POLLING_INTERVAL);
 
-        return () => clearInterval(intervalId); // Cleanup on component unmount
+        return () => clearInterval(intervalId);
     }, [liveTransactions]);
 
     function createLiveTransactionsRow(liveTransaction, i) {

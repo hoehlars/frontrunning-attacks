@@ -1,20 +1,20 @@
 import {Col, Row} from "react-bootstrap";
-import InsertionAttackModel from "../insertion-attacks-model/InsertionAttackModel";
-import InsertionAttackHeuristics from "../insertion-attacks-heuristics/InsertionAttackHeuristics";
 import InsertionAttackLive from "../insertion-attacks-live/InsertionAttackLive";
 import styles from './InsertionAttacks.module.css'
 import Container from "react-bootstrap/Container";
+import InsertionAttacksTimeSeries from "../insertion-attacks-time-series/InsertionAttacksTimeSeries";
+import InsertionAttacksTable from "../insertion-attacks-table/InsertionAttacksTable";
 
 
 function InsertionAttacks() {
     return (
         <Container fluid lg={2} className="m-0">
             <Row className={styles.minHeight}>
-                <Col className={[styles.topPaneLeftBorder].join(" ")}><InsertionAttackModel/></Col>
-                <Col><InsertionAttackHeuristics/></Col>
+                <InsertionAttackLive/>
             </Row>
             <Row className={[styles.bottomPaneBorder].join(" ")}>
-                <InsertionAttackLive/>
+                <Col className={[styles.bottomPaneLeftBorder].join(" ")}><InsertionAttacksTimeSeries /></Col>
+                <Col><InsertionAttacksTable /></Col>
             </Row>
         </Container>
     );

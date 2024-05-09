@@ -1,11 +1,13 @@
-.topPaneLeftBorder {
+.bottomPaneLeftBorder {
     border-right: 2px solid darkgray;
+    margin: auto;
 }
 
 .bottomPaneBorder {
     border-top: 2px solid darkgray;
+    min-height: 50vh;
 }
 
 .minHeight {
-    min-height: 300px;
+    min-height: 500px;
 }

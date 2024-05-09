@@ -15,9 +15,9 @@ export async function getAttackTransactionFromBlock(blockNumber) {
     }
 }
 
-export async function getClassificationOfInsertionAttackModel(transactionHash) {
+export async function getLiveTransactionClassificationOfInsertionAtk() {
     try {
-        const response = await fetch(url + '/api/transaction/getModelResult/' + transactionHash, {
+        const response = await fetch(url + '/api/transaction/getLiveTransactions', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -30,9 +30,24 @@ export async function getClassificationOfInsertionAttackModel(transactionHash) {
     }
 }
 
-export async function getLiveTransactionClassificationOfInsertionAtk() {
+export async function getInsertionAtkTimeSeries() {
     try {
-        const response = await fetch(url + '/api/transaction/getLiveTransactions', {
+        const response = await fetch(url + '/api/transaction/getAttackTransactionTimeSeries', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export async function getInsertionAtkTable() {
+    try {
+        const response = await fetch(url + '/api/transaction/getLastAttackTransactions', {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

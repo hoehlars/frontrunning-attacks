@@ -1,5 +1,4 @@
 import {Col, Row} from "react-bootstrap";
-import InsertionAttackModel from "../insertion-attacks-model/InsertionAttackModel";
 import styles from './QueryAndHeuristics.module.css'
 import Container from "react-bootstrap/Container";
 
