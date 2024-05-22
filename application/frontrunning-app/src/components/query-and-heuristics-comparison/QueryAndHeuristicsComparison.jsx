@@ -112,7 +112,16 @@ const TransactionForm = () => {
                     {!isLoading && transactionInfo && (
                         <div >
                             <Row className="text-center">
-                                <h6>Transaction found in Block Number: {transactionInfo.blockNumber}</h6>
+                                <h6>Transaction found in Block Number:
+                                    <a
+                                        href={`https://etherscan.io/block/${transactionInfo.blockNumber}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{marginLeft: "5px"}}
+                                    >
+                                        {transactionInfo.blockNumber}
+                                    </a>
+                                </h6>
                             </Row>
                             <Alert variant={transactionInfo.isModelAttack ? "warning" : "success"}>
                                 The Model {transactionInfo.isModelAttack ? "classified" : "did NOT classify"} the transaction as an attack.
