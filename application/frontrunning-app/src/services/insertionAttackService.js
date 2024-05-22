@@ -15,6 +15,34 @@ export async function getAttackTransactionFromBlock(blockNumber) {
     }
 }
 
+export async function getCostProfitFromBlockRange(blockNumberFrom, blockNumberTo) {
+    try {
+        const response = await fetch(url + `/api/block/getInsertionAtkHeuristics/${blockNumberFrom}/${blockNumberTo}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export async function getClassificationByModelAndHeuristics(transactionHash) {
+    try {
+    const response = await fetch(url + '/api/transaction/getModelAndHeuristicsClassification/' + transactionHash, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 export async function getLiveTransactionClassificationOfInsertionAtk() {
     try {
         const response = await fetch(url + '/api/transaction/getLiveTransactions', {
