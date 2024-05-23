@@ -4,8 +4,9 @@
 
 .bottomPaneBorder {
     border-top: 2px solid darkgray;
+    border-bottom: 2px solid darkgray;
 }
 
 .minHeight {
-    min-height: 300px;
+    min-height: 450px;
 }

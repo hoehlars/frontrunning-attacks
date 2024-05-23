@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-import requests
+import os
 
 import requests
 
@@ -17,8 +17,19 @@ class FeaturePreparer:
         self.processed_transaction_count = 0
 
         self.model_feature_7 = self.get_model_feature_7()
-        self.mean_feature_7 = torch.load('C:\\Users\\larsh\\Desktop\\front-running\\training\\mean_train.pt')
-        self.std_feature_7 = torch.load('C:\\Users\\larsh\\Desktop\\front-running\\training\\std_train.pt')
+        self.mean_feature_7 = torch.load(self.get_model_path('mean_train.pt'))
+        self.std_feature_7 = torch.load(self.get_model_path('std_train.pt'))
+
+    def get_model_path(self, model_name):
+
+        cwd = os.getcwd()
+        keyword = 'frontrunning-attacks'
+        parts = cwd.split(keyword)
+        root_path = os.path.join(parts[0], keyword)
+#        root_path = os.path.dirname(os.getcwd())
+        model_data_path = os.path.join(root_path, 'training', model_name)
+
+        return model_data_path
 
     def prepare(self, transaction, curr_block):
         self.add_transaction_to_cache(transaction)
@@ -36,7 +47,7 @@ class FeaturePreparer:
         self.get_mean_and_std_gas_price_of_last_n_blocks_of_same_EOA(
                 10, curr_block, address)
 
-        predicted_gas_price = self.get_predicted_gas_price()
+        predicted_gas_price = self.get_predicted_gas_price(self.last_15_transactions_cache)
         used_gas_token = self.is_gas_token_contract_in_internal_transaction(transaction['hash'])
 
         return [gas_price, self.mean_gas_price_last_10_blocks, self.std_price_last_10_blocks,
@@ -79,16 +90,15 @@ class FeaturePreparer:
             self.last_15_transactions_cache[index] = transaction["gasPrice"]
         self.transaction_count += 1
 
-    def get_predicted_gas_price(self):
+    def get_predicted_gas_price(self, list_of_15_gas_prices):
         with torch.no_grad():
-            tensor = torch.tensor(self.last_15_transactions_cache).type(torch.float32).view(1, 1, 15)
+            tensor = torch.tensor(list_of_15_gas_prices).type(torch.float32).view(1, 1, 15)
             predicted_curr_gas_price = self.model_feature_7(tensor.clone().detach())[:, -1].item()
             return predicted_curr_gas_price * self.std_feature_7.item() + self.mean_feature_7.item()
 
     def get_model_feature_7(self):
         model = LSTM(15, 100, 1, 1)
-        model.load_state_dict(torch.load('C:\\Users\\larsh\\Desktop\\front-running\\training\\lstm-feature-7-weights'
-                                         '.pth', map_location="cpu"))
+        model.load_state_dict(torch.load(self.get_model_path('lstm-feature-7-weights.pth'), map_location="cpu"))
         return model.eval()
 
     def is_gas_token_contract_in_internal_transaction(self, transaction_hash):
@@ -142,6 +152,32 @@ class FeaturePreparer:
     def convert_from_wei_to_gwei(self, gas_price_in_wei):
         gas_price_in_gwei = float(self.web3.from_wei(gas_price_in_wei, "gwei"))
         return gas_price_in_gwei
+
+    def get_last_15_gas_prices(self, tx_hash):
+
+        transaction = self.web3.eth.get_transaction(tx_hash)
+
+        # Get the block number and fetch the block details
+        block_number = transaction['blockNumber']
+        block = self.web3.eth.get_block(block_number, full_transactions=True)
+
+        # Extract the transactions from the block
+        transactions = block['transactions']
+
+        # Find the index of the given transaction
+        tx_index = None
+        for index, tx in enumerate(transactions):
+            if tx['hash'].hex() == tx_hash:
+                tx_index = index
+                break
+
+        start_index = max(0, tx_index - 14)  # 14 transactions before + the given one
+        end_index = min(len(transactions), tx_index + 1)  # Up to the current transaction
+
+        last_15_transactions = transactions[start_index:end_index]
+
+        gas_prices = [self.convert_from_wei_to_gwei(tx['gasPrice']) for tx in last_15_transactions]
+        return gas_prices
 
 
 class LSTM(torch.nn.Module):
