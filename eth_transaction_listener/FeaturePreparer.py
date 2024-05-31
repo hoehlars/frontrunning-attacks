@@ -21,7 +21,6 @@ class FeaturePreparer:
         self.std_feature_7 = torch.load(self.get_model_path('std_train.pt'))
 
     def get_model_path(self, model_name):
-
         cwd = os.getcwd()
         keyword = 'frontrunning-attacks'
         parts = cwd.split(keyword)
@@ -97,7 +96,7 @@ class FeaturePreparer:
             return predicted_curr_gas_price * self.std_feature_7.item() + self.mean_feature_7.item()
 
     def get_model_feature_7(self):
-        model = LSTM(15, 100, 1, 1)
+        model = LSTM(1, 32, 1, 1)
         model.load_state_dict(torch.load(self.get_model_path('lstm-feature-7-weights.pth'), map_location="cpu"))
         return model.eval()
 
@@ -187,10 +186,9 @@ class LSTM(torch.nn.Module):
         self.num_layers = num_layers
         self.lstm = torch.nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
         self.fully_connected = torch.nn.Linear(hidden_size, output_size)
+        self.dropout = torch.nn.Dropout(0.2)
 
     def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
-        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
-
-        out, _ = self.lstm(x, (h0, c0))
-        return self.fully_connected(out[:, -1, :])
+        out, _ = self.lstm(x)
+        dropout = self.dropout(out)
+        return self.fully_connected(dropout[:, -1, :])

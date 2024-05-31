@@ -6,10 +6,13 @@ import asyncio
 from FeaturePreparer import FeaturePreparer
 from network import Network
 from LiveTransactionsDAO import LiveTransactionsDAO
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-
-web3 = Web3(Web3.HTTPProvider("https://intensive-sly-mountain.quiknode.pro/a3f5256d7f2af6541d483cce3f1d49c94c01879e"))
+node_url = os.getenv("NODE_URL")
+web3 = Web3(Web3.HTTPProvider(node_url))
 
 # test to see if you are connected to your node
 # this will print out True if you are successfully connected to a node
