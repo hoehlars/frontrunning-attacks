@@ -6,17 +6,16 @@ from bson.json_util import dumps
 
 
 class InsertionAtkDAO:
-    def __init__(self):
-        uri = "mongodb+srv://larshoehener:4JYDS9UYJ5VOZvgR@cluster0.sd1cyte.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-        client = MongoClient(uri)
+    def __init__(self, mongo_uri, mongo_db, mongo_collection):
+        client = MongoClient(mongo_uri)
         try:
             client.admin.command('ping')
             print('Successfully connected to MongoDB')
         except Exception as e:
             print(e)
 
-        mydb = client["liveTransactionsEthDb"]
-        self.live_transactions_collection = mydb["liveTransactionsClassification"]
+        mydb = client[mongo_db]
+        self.live_transactions_collection = mydb[mongo_collection]
 
     def get_live_transactions(self):
         latest_ten_record = self.live_transactions_collection.find().sort('_id', pymongo.DESCENDING).limit(10)

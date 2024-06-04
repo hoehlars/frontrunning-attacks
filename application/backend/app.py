@@ -6,14 +6,22 @@ from web3 import Web3
 
 from application.backend.insertion_atk_heuristics import InsertionAtkHeuristics
 from application.backend.insertion_atk_dao import InsertionAtkDAO
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:3000"])
 
-web3 = Web3(Web3.HTTPProvider("https://intensive-sly-mountain.quiknode.pro/a3f5256d7f2af6541d483cce3f1d49c94c01879e/"))
+load_dotenv()
+node_url = os.getenv("NODE_URL")
+mongo_uri = os.getenv("MONGO_URI")
+mongo_db = os.getenv("MONGO_DB")
+mongo_collection = os.getenv("MONGO_COLLECTION")
+web3 = Web3(Web3.HTTPProvider(node_url))
+
 print(f'Connected to web3: {web3.is_connected()}')
 insertion_atk_heuristics = InsertionAtkHeuristics(web3)
-insertion_atk_dao = InsertionAtkDAO()
+insertion_atk_dao = InsertionAtkDAO(mongo_uri, mongo_db, mongo_collection)
 
 
 @app.route('/api/block/getInsertionAtkHeuristics/<block_number>', methods=['GET'])
