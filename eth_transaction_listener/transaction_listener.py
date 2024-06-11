@@ -1,26 +1,22 @@
-from datetime import datetime
-
-import numpy as np
 from web3 import Web3
 import asyncio
-from FeaturePreparer import FeaturePreparer
-from network import Network
+from model.FeaturePreparer import FeaturePreparer
+from model.network import Network
 from LiveTransactionsDAO import LiveTransactionsDAO
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 node_url = os.getenv("NODE_URL")
+mongo_uri = os.getenv("MONGO_URI")
+etherscan_api_key = os.getenv("ETHERSCAN_API_KEY")
 web3 = Web3(Web3.HTTPProvider(node_url))
 
 # test to see if you are connected to your node
 # this will print out True if you are successfully connected to a node
 print(f'Connected to web3: {web3.is_connected()}')
 
-feature_preparer = FeaturePreparer(web3)
+feature_preparer = FeaturePreparer(web3, etherscan_api_key)
 network = Network()
-live_transactions_dao = LiveTransactionsDAO(web3)
+live_transactions_dao = LiveTransactionsDAO(web3, mongo_uri)
 
 def handle_event(event):
     # print the transaction hash
@@ -38,6 +34,7 @@ def handle_event(event):
             live_transactions_dao.insert_transaction(transaction, is_attack)
 
     except Exception as err:
+        print(err)
         pass
 
 

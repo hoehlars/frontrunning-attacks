@@ -7,10 +7,12 @@ class EventDataFrameCreator:
         self.web3 = web3
 
     def get_checksum_address_from_topics_hash(self, topics_hash):
-        return self.web3.to_checksum_address(topics_hash.hex().replace("0x", "")[24:64])
+        return self.web3.to_checksum_address(f'0x{topics_hash.hex()}'.replace("0x", "")[24:64])
 
     def get_amount_of_tokens_from_data_hash(self, data_hash):
-        return int(data_hash.hex().replace("0x", "")[0:64], 16)
+        if data_hash:
+            return int(data_hash.hex().replace("0x", "")[0:64], 16)
+        return 0
 
     def create_df_of_events(self, events_by_address):
 
@@ -33,7 +35,7 @@ class EventDataFrameCreator:
                 continue
 
             for transaction in events_by_address[token_contract_address]:
-                transaction_hash = transaction["transactionHash"].hex()
+                transaction_hash = f'0x{transaction["transactionHash"].hex()}'
                 tx_by_hash = self.web3.eth.get_transaction(transaction_hash)
 
                 if len(transaction["topics"]) <= 1:

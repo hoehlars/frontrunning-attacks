@@ -12,15 +12,20 @@ function InsertionAttacksTimeSeries() {
 
     useEffect(() => {
         async function fetchTimeSeries() {
-            const timeSeries = await getInsertionAtkTimeSeries()
+            const timeSeries = await getInsertionAtkTimeSeries();
 
-            timeSeries.forEach(timePoint => setXData([...xData, new Date(timePoint._id)
+            const xNew = [];
+            const yNew = [];
+
+            timeSeries.forEach(timePoint => xNew.push(new Date(timePoint._id)
                 .toLocaleDateString('de-CH', {
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit'
-            })]));
-            timeSeries.forEach(timePoint => setYData([...yData, timePoint.count]));
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: '2-digit'
+                })));
+            timeSeries.forEach(timePoint => yNew.push(timePoint.count));
+            setXData(xNew);
+            setYData(yNew);
         }
 
         fetchTimeSeries()
@@ -34,16 +39,19 @@ function InsertionAttacksTimeSeries() {
                       {
                           x: xData,
                           y: yData,
-                          type: 'scatter',
-                          mode: 'lines+markers',
+                          type: 'bar',
+                          mode: 'markers',
                           marker: {color: 'red'},
                       },
-                      {type: 'bar'},
                   ]}
                   layout={{
-                      title: 'Time Series Insertion Attack', xaxis: {
+                      title: 'Time Series Insertion Attack',
+                      xaxis: {
                           tickvals: xData
-                      }
+                      },
+                      yaxis: {
+                          range: [0, 100]
+                      },
                   }}
                   style={{marginLeft: 'auto', marginRight: 'auto'}}
             /> : <Spinner className={styles.spinner} animation="border" variant="primary"/>}

@@ -3,11 +3,10 @@ from pymongo.mongo_client import MongoClient
 
 
 class LiveTransactionsDAO:
-    def __init__(self, web3):
+    def __init__(self, web3, mongo_uri):
         self.web3 = web3
-        uri = "mongodb+srv://larshoehener:4JYDS9UYJ5VOZvgR@cluster0.sd1cyte.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         # Create a new client and connect to the server
-        client = MongoClient(uri)
+        client = MongoClient(mongo_uri)
 
         try:
             client.admin.command('ping')
@@ -23,7 +22,7 @@ class LiveTransactionsDAO:
         gasPrice = transaction['gasPrice']
         insert_transaction = {'time': datetime.now(),
                               'transaction': transaction,
-                              'transactionHash': transaction_hash.hex(),
+                              'transactionHash': f'0x{transaction_hash.hex()}',
                               'gasPrice': float(self.web3.from_wei(gasPrice, "gwei")),
                               'is_attack': is_attack,
                               'ethAmount': float(self.web3.from_wei(transaction['value'], 'ether'))

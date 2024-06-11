@@ -1,0 +1,41 @@
+
+services:
+  backend:
+    build: ./application/backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_URL=${NODE_URL}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_COLLECTION=${MONGO_COLLECTION}
+      - ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+    volumes:
+      - ./application/backend:/app
+
+  frontend:
+    build: ./application/frontrunning-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./application/frontrunning-app:/app
+
+  transaction_listener_on_mainnet:
+    build:
+        context: ./eth_transaction_listener
+        dockerfile: Dockerfile
+    environment:
+      - NODE_URL=${NODE_URL}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB=${MONGO_DB}
+      - MONGO_COLLECTION=${MONGO_COLLECTION}
+      - ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+      - TZ=Europe/Berlin # for setting the correct timezone
+    volumes:
+      - ./eth_transaction_listener/transaction_listener.py:/app/transaction_listener.py
+      - /etc/localtime:/etc/localtime
+    depends_on:
+      - backend
+

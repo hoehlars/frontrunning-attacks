@@ -6,22 +6,12 @@ class Network:
 
     def __init__(self):
         self.network = self.load_network()
-        self.mean = torch.load(self.get_model_path('mlp-mean.pt'), map_location="cpu")
-        self.std = torch.load(self.get_model_path('mlp-std.pt'), map_location="cpu")
-
-    def get_model_path(self, model_name):
-        cwd = os.getcwd()
-        keyword = 'frontrunning-attacks'
-        parts = cwd.split(keyword)
-        root_path = os.path.join(parts[0], keyword)
-#        root_path = os.path.dirname(os.getcwd())
-        model_data_path = os.path.join(root_path, 'model', model_name)
-
-        return model_data_path
+        self.mean = torch.load('./model/mlp-mean.pt', map_location="cpu")
+        self.std = torch.load('./model/mlp-std.pt', map_location="cpu")
 
     def load_network(self):
         network = MLP()
-        network.load_state_dict(torch.load(self.get_model_path('front-running-attack-model.pth'), map_location="cpu"))
+        network.load_state_dict(torch.load('./model/front-running-attack-model.pth', map_location="cpu"))
         return network.eval()
 
     def get_prediction(self, x):

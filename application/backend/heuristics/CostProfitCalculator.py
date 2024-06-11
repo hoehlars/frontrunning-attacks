@@ -1,6 +1,5 @@
 import requests
 
-
 class CostProfitCalculator:
 
     def __init__(self, web3):

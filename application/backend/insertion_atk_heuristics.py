@@ -1,16 +1,15 @@
-import random
 import pandas as pd
-from application.backend.heuristics.InsertionAttackHeuristicsDetector import InsertionAttackHeuristicsDetector
-from eth_transaction_listener import FeaturePreparer
-from eth_transaction_listener import network
+from heuristics.InsertionAttackHeuristicsDetector import InsertionAttackHeuristicsDetector
+from model.FeaturePreparer import FeaturePreparer
+from model.network import Network
 
 
 class InsertionAtkHeuristics:
-    def __init__(self, web3):
+    def __init__(self, web3, etherscan_api_key):
         self.web3 = web3
         self.insertionAttackDetector = InsertionAttackHeuristicsDetector(web3)
-        self.network = network.Network()
-        self.feature_preparer = FeaturePreparer.FeaturePreparer(web3)
+        self.network = Network()
+        self.feature_preparer = FeaturePreparer(web3, etherscan_api_key)
 
     def get_transactions_by_block_number(self, block_number):
 

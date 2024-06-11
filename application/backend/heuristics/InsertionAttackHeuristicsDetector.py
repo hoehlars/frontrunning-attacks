@@ -1,6 +1,6 @@
 import pandas as pd
-from application.backend.heuristics.EventDataFrameCreator import EventDataFrameCreator
-from application.backend.heuristics.CostProfitCalculator import CostProfitCalculator
+from heuristics.EventDataFrameCreator import EventDataFrameCreator
+from heuristics.CostProfitCalculator import CostProfitCalculator
 
 
 class InsertionAttackHeuristicsDetector:

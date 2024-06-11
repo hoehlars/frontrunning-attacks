@@ -1,8 +1,5 @@
-from datetime import datetime, date
-
 import pymongo
 from pymongo.mongo_client import MongoClient
-from bson.json_util import dumps
 
 
 class InsertionAtkDAO:
