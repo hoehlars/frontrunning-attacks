@@ -27,7 +27,7 @@ services:
         context: ./eth_transaction_listener
         dockerfile: Dockerfile
     environment:
-      - NODE_URL=${NODE_URL}
+      - NODE_URL=${NODE_URL_2}
       - MONGO_URI=${MONGO_URI}
       - MONGO_DB=${MONGO_DB}
       - MONGO_COLLECTION=${MONGO_COLLECTION}
