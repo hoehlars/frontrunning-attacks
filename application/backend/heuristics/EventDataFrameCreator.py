@@ -1,3 +1,5 @@
+import time
+
 import pandas as pd
 
 
@@ -37,6 +39,7 @@ class EventDataFrameCreator:
             for transaction in events_by_address[token_contract_address]:
                 transaction_hash = f'0x{transaction["transactionHash"].hex()}'
                 tx_by_hash = self.web3.eth.get_transaction(transaction_hash)
+                time.sleep(0.05)
 
                 if len(transaction["topics"]) <= 1:
                     break
