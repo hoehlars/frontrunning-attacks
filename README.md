@@ -77,26 +77,30 @@ docker compose down
 
 ### Live classification dashboard 
 
-1. Live transactions: Classified transactions are fetched from the MongoDB in real time and visualized in
+![Screenshot from 2024-06-30 17-32-07](https://github.com/hoehlars/frontrunning-attacks/assets/91031963/759c6209-bbdd-4e1c-9258-ae5290267268)
+
+1. **Live transactions:** Classified transactions are fetched from the MongoDB in real time and visualized in
 a table (top in Figure).
 
-2. Line chart of attacks over time: The amount of all insertion attacks classified by the model are
+2. **Line chart of attacks over time:** The amount of all insertion attacks classified by the model are
 accumulated per day and visualized as a line chart (bottom left in Figure).
 
-3. Last 5 classified attacks:  The last 5 transactions that the model has classified as insertion attacks are
+3. **Last 5 classified attacks:**  The last 5 transactions that the model has classified as insertion attacks are
 fetched from the MongoDB and visualized in a table (bottom right in Figure 3).
 
 ### Heuristics dashboard
 
-1. Attacks by block number: Given any block number the heuristics algorithm checks if any insertion attack
+![Screenshot from 2024-05-31 13-28-58](https://github.com/hoehlars/frontrunning-attacks/assets/91031963/94fc90fb-5fb3-426b-9e41-289147f7526f)
+
+1. **Attacks by block number:** Given any block number the heuristics algorithm checks if any insertion attack
 can be found in that block in real time. If attacks are found, they are visualized including information about the
 attackers and victims addresses, transaction hash, gas fees spent, cost, profit and the token (top in Figure).
 
-2. Bar chart of cost and Profit by block range: Given a block range the heuristics algorithm iterates through
+2. **Bar chart of cost and Profit by block range:** Given a block range the heuristics algorithm iterates through
 all block numbers and calculates the total cost and profit per block. The cost and profit are then visualized per
 block as a bar chart on the dashboard (bottom left in Figure).
 
-3. Comparison of model & heuristics by transaction hash: To compare the classification of the model and
+3. **Comparison of model & heuristics by transaction hash:** To compare the classification of the model and
 the heuristics algorithm, a transaction hash can be searched to predict whether a transaction is an attack. The
 model predicts if the transaction is an attack, while the algorithm checks if the transaction is part of an insertion
 attack. The classifications of the model and the heuristics algorithm are then visualized on the dashboard as well
